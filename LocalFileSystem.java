@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 
 public class LocalFileSystem implements FileSystem {
 
@@ -21,23 +20,28 @@ public class LocalFileSystem implements FileSystem {
           } else if (SE.indexOf("nux") >= 0) {
             System.out.println("Votre système est Unix ou Linux");
             return "/";
-          } else if (SE.indexOf("sunos") >= 0) {
-            System.out.println("Votre système est Solaris");
-          } else {
+          } else{
             System.out.println("Votre système n'est pas pris en charge!");
-            return null;
+            return "";
           }
-          return null;
-        }
-
-    public String getParent() {
-        return null;
     }
 
-    // On re tourne une liste avec tous les dossiers et le fichiers 
+
+    public String getParent(String path) {
+        File file = new File(path);
+        if(file.exists()){
+            if(file.isDirectory()){
+                return file.getParentFile().getName();
+            }else{
+                return file.getParentFile().getName();
+            }
+        }
+        return "";
+    }
+
     public ArrayList<String> getChildren(String path) {
         ArrayList<String> lChildrens = new ArrayList<>();
-        File dir = new File(path);
+        File dir  = new File(path);
         File[] liste = dir.listFiles();
         for(File item : liste){
             lChildrens.add(item.getName());
@@ -45,7 +49,7 @@ public class LocalFileSystem implements FileSystem {
         return lChildrens;
     }
 
-    public List<String> getAncestors(String path) {
+    public ArrayList<String> getAncestors(String path) {
         return null;
     }
 
@@ -82,13 +86,28 @@ public class LocalFileSystem implements FileSystem {
     }
 
     public static void main(String[] args) {
+
         LocalFileSystem test = new LocalFileSystem();
-        //String a = test.getRoot();
-        //System.out.println(a);
-        ArrayList<String> liste = new ArrayList<>();
-        liste =  test.getChildren("C:\\");
-        for(String s : liste){
+
+        /* Test getRoot */
+        String root = test.getRoot();
+        System.out.println(root);
+
+        /* Test getParent */
+        String parent = test.getParent("C:\\Python27");
+        System.out.println(parent);
+
+        /* Test getChildren */
+        ArrayList<String> lChildrens = new ArrayList<>();
+        lChildrens = test.getChildren("C:\\");
+        for(String s : lChildrens){
             System.out.println(s);
         }
-    }  
+        /* Test getAncestrors */
+
+        /*Test getAbsolutePath */
+
+
+    }
+    
 }
