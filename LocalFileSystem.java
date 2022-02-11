@@ -74,11 +74,12 @@ public class LocalFileSystem implements FileSystem {
 
         /* Test getRoot */
         String root = test.getRoot();
-        System.out.println(root);
+        System.out.println("Racine : " +root);
 
         /* Test getParent */
-        String parent = test.getParent("C:\\Python27");
-        System.out.println(parent);
+        String testPath = "C:\\Python27\\Python2.exe";
+        String parent = test.getParent(testPath);
+        System.out.println("Parent de " + testPath + " : " +parent);
 
         /* Test getChildren */
 
