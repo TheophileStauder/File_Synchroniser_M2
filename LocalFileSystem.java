@@ -1,4 +1,8 @@
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class LocalFileSystem implements FileSystem {
@@ -35,8 +39,14 @@ public class LocalFileSystem implements FileSystem {
         return "";
     }
 
-    public ArrayList<String> getChildren() {
-        return null;
+    public ArrayList<String> getChildren(String path) {
+        ArrayList<String> lChildrens = new ArrayList<>();
+        File dir  = new File(path);
+        File[] liste = dir.listFiles();
+        for(File item : liste){
+            lChildrens.add(item.getName());
+        }
+        return lChildrens;
     }
 
     public ArrayList<String> getAncestors(String path) {
@@ -60,7 +70,14 @@ public class LocalFileSystem implements FileSystem {
     }
 
     public File createDirectory(String path) {
-        return null;
+        Path p = Paths.get(path);
+        try {
+            Files.createDirectories(p);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        File f = new File(path);
+        return f;
 
     }
 
@@ -82,7 +99,11 @@ public class LocalFileSystem implements FileSystem {
         System.out.println("Parent de " + testPath + " : " +parent);
 
         /* Test getChildren */
-
+        ArrayList<String> lChildrens = new ArrayList<>();
+        lChildrens = test.getChildren("C:\\");
+        for(String s : lChildrens){
+            System.out.println(s);
+        }
         /* Test getAncestrors */
 
         /*Test getAbsolutePath */
