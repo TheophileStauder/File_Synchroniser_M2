@@ -1,8 +1,5 @@
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+import java.util.ArrayList;
 
 public class LocalFileSystem implements FileSystem {
 
@@ -19,24 +16,30 @@ public class LocalFileSystem implements FileSystem {
           } else if (SE.indexOf("nux") >= 0) {
             System.out.println("Votre système est Unix ou Linux");
             return "/";
-          } else if (SE.indexOf("sunos") >= 0) {
-            System.out.println("Votre système est Solaris");
-          } else {
+          } else{
             System.out.println("Votre système n'est pas pris en charge!");
-            return null;
+            return "";
           }
-          return null;
+    }
+
+
+    public String getParent(String path) {
+        File file = new File(path);
+        if(file.exists()){
+            if(file.isDirectory()){
+                return file.getParentFile().getName();
+            }else{
+                return file.getParentFile().getName();
+            }
         }
+        return "";
+    }
 
-    public String getParent() {
+    public ArrayList<String> getChildren() {
         return null;
     }
 
-    public List<String> getChildren() {
-        return null;
-    }
-
-    public List<String> getAncestors(String path) {
+    public ArrayList<String> getAncestors(String path) {
         return null;
     }
 
@@ -66,9 +69,24 @@ public class LocalFileSystem implements FileSystem {
     }
 
     public static void main(String[] args) {
+
         LocalFileSystem test = new LocalFileSystem();
-       String a = test.getRoot();
-       System.out.println(a);
+
+        /* Test getRoot */
+        String root = test.getRoot();
+        System.out.println(root);
+
+        /* Test getParent */
+        String parent = test.getParent("C:\\Python27");
+        System.out.println(parent);
+
+        /* Test getChildren */
+
+        /* Test getAncestrors */
+
+        /*Test getAbsolutePath */
+
+
     }
     
 }
