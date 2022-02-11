@@ -2,6 +2,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocalFileSystem implements FileSystem {
@@ -32,8 +33,15 @@ public class LocalFileSystem implements FileSystem {
         return null;
     }
 
-    public List<String> getChildren() {
-        return null;
+    // On re tourne une liste avec tous les dossiers et le fichiers 
+    public ArrayList<String> getChildren(String path) {
+        ArrayList<String> lChildrens = new ArrayList<>();
+        File dir = new File(path);
+        File[] liste = dir.listFiles();
+        for(File item : liste){
+            lChildrens.add(item.getName());
+        }
+        return lChildrens;
     }
 
     public List<String> getAncestors(String path) {
@@ -67,8 +75,12 @@ public class LocalFileSystem implements FileSystem {
 
     public static void main(String[] args) {
         LocalFileSystem test = new LocalFileSystem();
-       String a = test.getRoot();
-       System.out.println(a);
-    }
-    
+        //String a = test.getRoot();
+        //System.out.println(a);
+        ArrayList<String> liste = new ArrayList<>();
+        liste =  test.getChildren("C:\\");
+        for(String s : liste){
+            System.out.println(s);
+        }
+    }  
 }

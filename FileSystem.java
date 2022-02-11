@@ -6,7 +6,7 @@ public interface FileSystem{
 
     public String getParent();
 
-    public List<String> getChildren();
+    public List<String> getChildren(String path);
 
     public List<String> getAncestors(String path);
     public String getAbsolutePath(String relativePath);
