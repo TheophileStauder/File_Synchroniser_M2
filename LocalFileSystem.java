@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,7 +66,14 @@ public class LocalFileSystem implements FileSystem {
     }
 
     public File createDirectory(String path) {
-        return null;
+        Path p = Paths.get(path);
+        try {
+            Files.createDirectories(p);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        File f = new File(path);
+        return f;
 
     }
 
