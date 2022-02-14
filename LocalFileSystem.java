@@ -51,8 +51,14 @@ public class LocalFileSystem implements FileSystem {
 
     public ArrayList<String> getAncestors(String path) {
         ArrayList<String> lChildrens = new ArrayList<>();
-        
-        return null;
+        ArrayList<String> copy = new ArrayList<>();
+
+        while(!path.equals(getRoot()));{
+            copy = getChildren(getParent(path));
+            lChildrens.addAll(copy);
+            copy.clear();
+        }
+        return lChildrens;
     }
 
     public String getAbsolutePath(String relativePath) {
@@ -92,22 +98,13 @@ public class LocalFileSystem implements FileSystem {
         LocalFileSystem test = new LocalFileSystem();
 
         /* Test getRoot */
-<<<<<<< HEAD
-        /*String root = test.getRoot();
-        System.out.println(root);*/
-
-        /* Test getParent */
-        String parent = test.getParent("C:\\Intel\\gp");
-        System.out.println(parent);
-=======
         String root = test.getRoot();
         System.out.println("Racine : " +root);
 
         /* Test getParent */
-        String testPath = "C:\\Python27\\Python2.exe";
-        String parent = test.getParent(testPath);
-        System.out.println("Parent de " + testPath + " : " +parent);
->>>>>>> c24b6c9581bd6193d6ca7148406353df254a546f
+        //String testPath = "C:\\Python27\\Python2.exe";
+        //String parent = test.getParent(testPath);
+        //System.out.println("Parent de " + testPath + " : " +parent);
 
         /* Test getChildren */
        /* ArrayList<String> lChildrens = new ArrayList<>();
@@ -121,6 +118,9 @@ public class LocalFileSystem implements FileSystem {
 
 
         /* Test getAncestrors */
+        ArrayList<String> lAncestors = new ArrayList<>();
+        lAncestors = test.getAncestors("C:\\Program Files\\Ankama\\Ankama Launcher\\locales");
+        System.out.println(lAncestors);
 
         /*Test getAbsolutePath */
 
