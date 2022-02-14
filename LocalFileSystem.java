@@ -50,6 +50,8 @@ public class LocalFileSystem implements FileSystem {
     }
 
     public ArrayList<String> getAncestors(String path) {
+        ArrayList<String> lChildrens = new ArrayList<>();
+        
         return null;
     }
 
@@ -90,19 +92,24 @@ public class LocalFileSystem implements FileSystem {
         LocalFileSystem test = new LocalFileSystem();
 
         /* Test getRoot */
-        String root = test.getRoot();
-        System.out.println(root);
+        /*String root = test.getRoot();
+        System.out.println(root);*/
 
         /* Test getParent */
-        String parent = test.getParent("C:\\Python27");
+        String parent = test.getParent("C:\\Intel\\gp");
         System.out.println(parent);
 
         /* Test getChildren */
-        ArrayList<String> lChildrens = new ArrayList<>();
+       /* ArrayList<String> lChildrens = new ArrayList<>();
         lChildrens = test.getChildren("C:\\");
         for(String s : lChildrens){
             System.out.println(s);
-        }
+        }*/
+
+        /* Test createDirectory */
+        test.createDirectory("C:\\allo");
+
+
         /* Test getAncestrors */
 
         /*Test getAbsolutePath */
