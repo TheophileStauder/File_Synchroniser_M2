@@ -1,3 +1,5 @@
+import jdk.swing.interop.SwingInterOpUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,9 +40,7 @@ public class LocalFileSystem implements FileSystem {
     public String getParent(String path) {
         File file = new File(path);
         if(file.exists()){
-            if(file.isDirectory()){
-                return file.getParentFile().getName();
-            }else{
+            if(file.isDirectory()) {
                 return file.getParentFile().getName();
             }
         }
@@ -58,7 +58,7 @@ public class LocalFileSystem implements FileSystem {
     }
 
     public ArrayList<String> getAncestors(String path) {
-        ArrayList<String> lChildrens = new ArrayList<>();
+        /*ArrayList<String> lChildrens = new ArrayList<>();
         ArrayList<String> copy = new ArrayList<>();
 
         while(!path.equals(getRoot()));{
@@ -66,7 +66,15 @@ public class LocalFileSystem implements FileSystem {
             lChildrens.addAll(copy);
             copy.clear();
         }
-        return lChildrens;
+        return lChildrens;*/
+        ArrayList<String> lAncestors = new ArrayList<>();
+        while(!path.equals(getRoot())){
+            path = getParent(path);
+            lAncestors.add(path);
+            System.out.println("coucou");
+        }
+
+        return lAncestors;
     }
 
     public String getAbsolutePath(String relativePath) {
@@ -158,7 +166,18 @@ public class LocalFileSystem implements FileSystem {
     }
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
-        LocalFileSystem fileSystem = new LocalFileSystem("C:\\UE-SYN");
+        LocalFileSystem fileSystem = null ;
+        String SE = System.getProperty("os.name").toLowerCase();
+        if (SE.indexOf("win") >= 0) {
+            //Pour WINDOWS
+            fileSystem = new LocalFileSystem("/home/profil/stauder11u/UE-SYN");  //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
+        } else if (SE.indexOf("nux") >= 0) {
+            //Pour LINUX
+            fileSystem = new LocalFileSystem("C:\\UE-SYN");
+        }
+
+
+
 
         /* Test getRoot */
         String root = fileSystem.getRoot();
@@ -176,8 +195,8 @@ public class LocalFileSystem implements FileSystem {
         /* Test createDirectory */
         System.out.println("**************** CREATE DIRECTORY *****************");
         for(int i = 0 ; i < 5 ; i++){
-            fileSystem.createDirectory(fileSystem.getRoot()+"\\testDirectory"+i);
-            System.out.println("Dossier créé : " + fileSystem.getRoot()+"\\testDirectory"+i);
+            fileSystem.createDirectory(fileSystem.getRoot()+File.separator+"testDirectory"+i);
+            System.out.println("Dossier créé : " + fileSystem.getRoot()+File.separator+"testDirectory"+i);
         }
         System.out.println("************************************************\n");
 
@@ -197,15 +216,18 @@ public class LocalFileSystem implements FileSystem {
         //String pathAncestors = fileSystem.getChildren("C:\\UE-SYN\\testDirectory1").get(0);
         System.out.println("**************** Test GET ANCETRES ****************");
         ArrayList<String> lAncestors = new ArrayList<String>();
-        //lAncestors = fileSystem.getAncestors("C:\\UE-SYN\\testDirectory1");
-        //System.out.println(lAncestors);
+        lAncestors = fileSystem.getAncestors(fileSystem.getRoot() +File.separator+"testDirectory0"+File.separator+"testDirectory01"+File.separator+"testDirectory010");
+        System.out.println(lAncestors.toString());
         System.out.println("************************************************\n");
+
+
+
         /*Test getAbsolutePath */
 
         /* Test hash file */
         System.out.println("**************** Test HASH ****************");
 
-        String hash = fileSystem.hashFile("C:\\UE-SYN\\testDirectory0\\test.txt");
+        String hash = fileSystem.hashFile(fileSystem.getRoot() +File.separator+"testDirectory0"+File.separator+"dog.txt");
         System.out.println(hash);
         System.out.println("************************************************\n");
     }
