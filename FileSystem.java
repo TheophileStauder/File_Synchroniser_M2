@@ -13,7 +13,7 @@ public interface FileSystem{
     public String getAbsolutePath(String relativePath);
     public String getRelativePath(String absolutePath);
     public void replace(String absolutePathTargetFS, FileSystem fsSource, String absolutePathSourceFS);
-    public FileSystem getReference();
+    public FileSystem getReference() throws CloneNotSupportedException;
     public File createDirectory(String path);
     public void fileCopy(File input, File output) throws Exception;
 
