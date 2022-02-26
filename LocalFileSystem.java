@@ -40,9 +40,7 @@ public class LocalFileSystem implements FileSystem {
     public String getParent(String path) {
         File file = new File(path);
         if(file.exists()){
-            if(file.isDirectory()) {
                 return file.getParentFile().getName();
-            }
         }
         return "";
     }
@@ -58,20 +56,11 @@ public class LocalFileSystem implements FileSystem {
     }
 
     public ArrayList<String> getAncestors(String path) {
-        /*ArrayList<String> lChildrens = new ArrayList<>();
-        ArrayList<String> copy = new ArrayList<>();
-
-        while(!path.equals(getRoot()));{
-            copy = getChildren(getParent(path));
-            lChildrens.addAll(copy);
-            copy.clear();
-        }
-        return lChildrens;*/
         ArrayList<String> lAncestors = new ArrayList<>();
-        while(!path.equals(getRoot())){
-            path = getParent(path);
-            lAncestors.add(path);
-            System.out.println("coucou");
+        File file = new File(path);
+        while(!file.getAbsolutePath().equals(getRoot())){
+            file = file.getParentFile();
+            lAncestors.add(file.getAbsolutePath());
         }
 
         return lAncestors;
@@ -164,16 +153,20 @@ public class LocalFileSystem implements FileSystem {
         //return complete hash
         return sb.toString();
     }
+
+
+
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
         LocalFileSystem fileSystem = null ;
         String SE = System.getProperty("os.name").toLowerCase();
         if (SE.indexOf("win") >= 0) {
             //Pour WINDOWS
-            fileSystem = new LocalFileSystem("/home/profil/stauder11u/UE-SYN");  //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
+            fileSystem = new LocalFileSystem("C:\\UE-SYN");
+              //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
         } else if (SE.indexOf("nux") >= 0) {
             //Pour LINUX
-            fileSystem = new LocalFileSystem("C:\\UE-SYN");
+            fileSystem = new LocalFileSystem("/home/profil/stauder11u/UE-SYN");
         }
 
 
@@ -185,10 +178,7 @@ public class LocalFileSystem implements FileSystem {
         System.out.println("**************** RACINE SYSTEM *****************");
         System.out.println("La racine est : " + fileSystem.getRoot());
         System.out.println("************************************************\n");
-        /* Test getParent */
-        //String testPath = "C:\\Python27\\Python2.exe";
-        //String parent = fileSystem.getParent(testPath);
-        //System.out.println("Parent de " + testPath + " : " +parent);
+
 
 
 
@@ -212,12 +202,24 @@ public class LocalFileSystem implements FileSystem {
         System.out.println("************************************************\n");
 
 
+        /* Test getParent */
+        System.out.println("**************** Test GET PARENT ****************");
+        String testPath = fileSystem.getRoot()+File.separator+"testDirectory0"+File.separator+"testDirectory01";
+        String parent2 = fileSystem.getParent(testPath);
+        System.out.println("Parent de " + testPath + " : " + parent2);
+        testPath = fileSystem.getRoot()+File.separator+"testDirectory0"+File.separator+"dog.txt";
+        parent2 = fileSystem.getParent(testPath);
+        System.out.println("Parent de " + testPath + " : " + parent2);
+        System.out.println("************************************************\n");
+
+
         /* Test getAncestors */
         //String pathAncestors = fileSystem.getChildren("C:\\UE-SYN\\testDirectory1").get(0);
         System.out.println("**************** Test GET ANCETRES ****************");
         ArrayList<String> lAncestors = new ArrayList<String>();
-        lAncestors = fileSystem.getAncestors(fileSystem.getRoot() +File.separator+"testDirectory0"+File.separator+"testDirectory01"+File.separator+"testDirectory010");
-        System.out.println(lAncestors.toString());
+        testPath = fileSystem.getRoot() +File.separator+"testDirectory0"+File.separator+"testDirectory01"+File.separator+"testDirectory010";
+        lAncestors = fileSystem.getAncestors(testPath);
+        System.out.println("Les ancêtres de " + testPath + " sont : " + lAncestors.toString());
         System.out.println("************************************************\n");
 
 
@@ -225,10 +227,10 @@ public class LocalFileSystem implements FileSystem {
         /*Test getAbsolutePath */
 
         /* Test hash file */
-        System.out.println("**************** Test HASH ****************");
-
-        String hash = fileSystem.hashFile(fileSystem.getRoot() +File.separator+"testDirectory0"+File.separator+"dog.txt");
-        System.out.println(hash);
+        System.out.println("**************** Test HASH MD5 ****************");
+        testPath = fileSystem.getRoot() +File.separator+"testDirectory0"+File.separator+"dog.txt";
+        String hash = fileSystem.hashFile(testPath);
+        System.out.println("Hash de " + testPath + " : " + hash);
         System.out.println("************************************************\n");
     }
     
