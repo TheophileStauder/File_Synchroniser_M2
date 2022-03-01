@@ -13,11 +13,12 @@ import java.util.ArrayList;
 
 public class LocalFileSystem implements FileSystem {
 
-
+    private ArrayList<String> lfiles = new ArrayList<>();
     private String root;
 
     public LocalFileSystem(String racine){
         this.root = racine;
+        this.lfiles = getChildren(getRoot());
     }
     // Retourne la racine du système
     public String getRoot() {
@@ -162,7 +163,7 @@ public class LocalFileSystem implements FileSystem {
         String SE = System.getProperty("os.name").toLowerCase();
         if (SE.indexOf("win") >= 0) {
             //Pour WINDOWS
-            fileSystem = new LocalFileSystem("C:\\UE-SYN");
+            fileSystem = new LocalFileSystem("C:\\");
               //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
         } else if (SE.indexOf("nux") >= 0) {
             //Pour LINUX
