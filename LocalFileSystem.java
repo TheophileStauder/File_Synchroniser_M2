@@ -7,19 +7,21 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class LocalFileSystem implements FileSystem {
 
-    private ArrayList<String> lfiles = new ArrayList<>();
     private String root;
+    private static Calendar cal = Calendar.getInstance();
 
     public LocalFileSystem(String racine){
         this.root = racine;
-        this.lfiles = getChildren(getRoot());
     }
     // Retourne la racine du système
     public String getRoot() {
@@ -187,6 +189,26 @@ public class LocalFileSystem implements FileSystem {
         }
     }
 
+    /**
+     * Cette fonction permet d'obtenir la date de modification d'un fichier ou d'un dossier.
+     * @param file le fichier ou le dossier dont il faut obtenir la date de modification.
+     * @return La date de modification du fichier ou du dossier donné en paramètre de la méthode.
+     */
+    public static long getDateModification(File file){
+        
+        Path path = file.toPath();
+
+        try {
+            BasicFileAttributes basic = Files.readAttributes(path, BasicFileAttributes.class);
+
+            cal.setTimeInMillis(basic.lastModifiedTime().toMillis());
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+        }
+
+        return cal.getTimeInMillis();
+    }
+
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
@@ -194,7 +216,7 @@ public class LocalFileSystem implements FileSystem {
         String SE = System.getProperty("os.name").toLowerCase();
         if (SE.indexOf("win") >= 0) {
             //Pour WINDOWS
-            fileSystem = new LocalFileSystem("C:\\UE-SYN");
+            fileSystem = new LocalFileSystem("C:\\");
               //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
         } else if (SE.indexOf("nux") >= 0) {
             //Pour LINUX
@@ -269,6 +291,14 @@ public class LocalFileSystem implements FileSystem {
         System.out.println("************************************************\n");
 
         /*Test getAbsolutePath */
+
+        /*Test getDateModification */
+        System.out.println("**************** Test getDateModifiction ****************");
+        long lo;
+        File ff = new File("C://testDirectory0//dog.txt");
+        lo = fileSystem.getDateModification(ff);
+        System.out.println("Date de modification en millisecondes pour le fichier "+ff+ " : "+lo);
+        System.out.println("************************************************\n");
 
         /* Test hash file */
         System.out.println("**************** Test SYNCHRONISER ****************");

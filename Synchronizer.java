@@ -46,7 +46,42 @@ public class Synchronizer {
         reconcile(fs1, dirtyPaths1, fs2, dirtyPaths2, "");
     }
 
+    /*
+    * A est le fileSystem 
+    * B est le fileSystem 
+    * p est le path 
+    recon(A,B,p) = 
+    1) if !dirty_A(p) && !dirty_B(p) Si les fichiers ne sont pas dirty on ne fait rien 
+            then (A,B)
+    2) else if isdir_A,B(p) 
+            then let {p1,p2,...,pn} = children_A,B(p) (in lexicographic order)
+            in let (A0,B0) = (A,B)
+                let (Ai+1, Bi+1) = recon(Ai,Bi,pi+1)
+                    for 0 <= i <= n
+                in (An,Bn)
+    3) else if !dirty_A(p) Si A n'est pas dirty mais B est dirty alors A prends B
+            then (A <-- B, B)
+    4) else if !dirty_B(p) Si B n'est pas dirty mais A est dirty alors B prends A
+            then (A,B <-- A)
+    5) else
+            (A,B)
+
+    Suppositions : 
+        Si la liste des dirtypaths est vide alors on ne fait rien vu que aucun fichier est modifié ou supprimé
+    */
     public void reconcile(FileSystem fs1, ArrayList<String> dirtyPaths1, FileSystem fs2, ArrayList<String> dirtyPaths2,String currentRelativePath) {
+        if(dirtyPaths1.isEmpty() && dirtyPaths2.isEmpty()){
+            // on ne fait rien, les fichiers et dossiers ne sont pas dirtys
+        }
+        else if(!dirtyPaths1.isEmpty() && !dirtyPaths1.isEmpty()){
+            
+        }
+        else if(dirtyPaths1.isEmpty()){
+
+        }
+        else if(dirtyPaths2.isEmpty()){
+
+        }
 
     }
 
