@@ -16,10 +16,12 @@ import java.util.HashMap;
 public class LocalFileSystem implements FileSystem,Cloneable {
 
     private String root;
+    private HashMap<String, String> hashes;
     private static Calendar cal = Calendar.getInstance();
 
-    public LocalFileSystem(String racine){
+    public LocalFileSystem(String racine) throws IOException, NoSuchAlgorithmException {
         this.root = racine;
+        this.hashes = getAllHash();
     }
     // Retourne la racine du système
     public String getRoot() {
@@ -73,7 +75,8 @@ public class LocalFileSystem implements FileSystem,Cloneable {
     /**
      * Retourne une copie de l'objet sans référence
      */
-    public FileSystem getReference() throws CloneNotSupportedException {
+    public FileSystem getReference() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException {
+        this.hashes = getAllHash();
         FileSystem copy = (LocalFileSystem) this.clone();
         //FileSystem copy = new Rthis;
         return copy;
@@ -168,34 +171,53 @@ public class LocalFileSystem implements FileSystem,Cloneable {
     public HashMap<String, String> getAllHash() throws IOException, NoSuchAlgorithmException {
         HashMap<String, String> allHash = new HashMap<>();
         ArrayList<String> visited = new ArrayList<>();
-        //Parcours DFS
         ArrayList<String> childs = getChildren(getRoot());
+        File f;
+        //Parcours DFS
+
         for (String c : childs ){
+            f = new File(c);
             visited.add(c);
-            explore(c,allHash,visited);
+            if(f.isDirectory()){
+                //System.out.println(c + "est un directory ");
+                allHash.put(c,hashDirectory(c));
+                explore(c,allHash,visited);
+            }else{
+                //System.out.println(c + "    " + f.getName());
+                allHash.put(c,hashFile(c));
+            }
+
         }
         return allHash;
     }
 
-    public void explore(String c, HashMap<String, String> hashs,ArrayList<String> visited) throws IOException, NoSuchAlgorithmException{
+
+
+    public void explore(String c, HashMap<String, String> hashs, ArrayList<String> visited) throws IOException, NoSuchAlgorithmException{
         File test = new File(c);
 
 
         if(test.isDirectory()){
             hashs.put(c,hashDirectory(c));
             //System.out.println(c + " est un directory");
-        }
-        if(test.isFile()){
-            System.out.println(c + " est un fichier ");
-            hashs.put(c,hashFile(c));
-        }
-        ArrayList<String> childs = getChildren(getRoot());
-        for (String child : childs ){
-            if(!visited.contains(c)) {
-                visited.add(c);
-                explore(child, hashs,visited);
+            ArrayList<String> childs = getChildren(getRoot());
+            for (String child : childs){
+                if(!visited.contains(child)) {
+                    visited.add(child);
+                    explore(child, hashs,visited);
+                }
             }
         }
+        if(test.isFile()){
+            //System.out.println(c + " est un fichier ");
+            visited.add(c);
+            hashs.put(c,hashFile(c));
+        }
+
+    }
+
+    public HashMap<String, String> getHashes() {
+        return hashes;
     }
 
     /**
@@ -219,13 +241,13 @@ public class LocalFileSystem implements FileSystem,Cloneable {
     }
 
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, CloneNotSupportedException {
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, CloneNotSupportedException, InterruptedException {
 
         LocalFileSystem fileSystem = null ;
         String SE = System.getProperty("os.name").toLowerCase();
         if (SE.indexOf("win") >= 0) {
             //Pour WINDOWS
-            fileSystem = new LocalFileSystem("C:\\");
+            fileSystem = new LocalFileSystem("C:\\UE-SYN");
               //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
         } else if (SE.indexOf("nux") >= 0) {
             //Pour LINUX
@@ -312,15 +334,15 @@ public class LocalFileSystem implements FileSystem,Cloneable {
         /* Test hash file */
         System.out.println("**************** Test SYNCHRONISER ****************");
         Synchronizer synchronizer = new Synchronizer();
-        LocalFileSystem fs1 = new LocalFileSystem("C:"+File.separator + "testDirectory0");
-        LocalFileSystem fs2 = new LocalFileSystem("C:"+File.separator + "testDirectory1");
+        LocalFileSystem fs1 = new LocalFileSystem("C:"+File.separator + "UE-SYN1");
+        LocalFileSystem fs2 = new LocalFileSystem("C:"+File.separator + "UE-SYN2");
 
         while(true){
-            ArrayList<String> paths = synchronizer.computeDirty(fs1.getReference(),fs1.getReference(),"");
+
+            synchronizer.synchronize(fs1,fs2);
+
+            //ArrayList<String> paths = synchronizer.computeDirty(fs1copy,fs1,"");
             //paths.addAll(synchronizer.computeDirty(fs2.getReference(),fs1,""));
-            if(paths.size() !=0){
-                //System.out.println(paths.toString());
-        }
 
         }
         

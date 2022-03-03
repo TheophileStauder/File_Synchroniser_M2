@@ -16,9 +16,11 @@ public interface FileSystem{
     public String getAbsolutePath(String relativePath);
     public String getRelativePath(String absolutePath);
     public void replace(String absolutePathTargetFS, FileSystem fsSource, String absolutePathSourceFS);
-    public FileSystem getReference() throws CloneNotSupportedException;
+    public FileSystem getReference() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException;
     public File createDirectory(String path) throws IOException;
     public void fileCopy(File input, File output) throws Exception;
 
     HashMap<String, String> getAllHash() throws IOException, NoSuchAlgorithmException;
+
+    HashMap<String, String> getHashes();
 }
