@@ -3,19 +3,17 @@ import jdk.swing.interop.SwingInterOpUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class LocalFileSystem implements FileSystem {
+public class LocalFileSystem implements FileSystem,Cloneable {
 
     private String root;
     private static Calendar cal = Calendar.getInstance();
@@ -43,7 +41,7 @@ public class LocalFileSystem implements FileSystem {
         File dir  = new File(path);
         File[] liste = dir.listFiles();
         for(File item : liste){
-            lChildrens.add(item.getName());
+            lChildrens.add(path+File.separator+item.getName());
         }
         return lChildrens;
     }
@@ -76,7 +74,8 @@ public class LocalFileSystem implements FileSystem {
      * Retourne une copie de l'objet sans référence
      */
     public FileSystem getReference() throws CloneNotSupportedException {
-        FileSystem copy = (FileSystem) this.clone();
+        FileSystem copy = (LocalFileSystem) this.clone();
+        //FileSystem copy = new Rthis;
         return copy;
     }
 
@@ -86,7 +85,7 @@ public class LocalFileSystem implements FileSystem {
      * @param path
      * @return
      */
-    public File createDirectory(String path) {
+    public File createDirectory(String path) throws IOException {
         Path p = Paths.get(path);
         try {
             Files.createDirectories(p);
@@ -168,24 +167,34 @@ public class LocalFileSystem implements FileSystem {
 
     public HashMap<String, String> getAllHash() throws IOException, NoSuchAlgorithmException {
         HashMap<String, String> allHash = new HashMap<>();
+        ArrayList<String> visited = new ArrayList<>();
         //Parcours DFS
         ArrayList<String> childs = getChildren(getRoot());
         for (String c : childs ){
-            explore(c,allHash);
+            visited.add(c);
+            explore(c,allHash,visited);
         }
         return allHash;
     }
 
-    public void explore(String c, HashMap<String, String> hashs) throws IOException, NoSuchAlgorithmException{
+    public void explore(String c, HashMap<String, String> hashs,ArrayList<String> visited) throws IOException, NoSuchAlgorithmException{
         File test = new File(c);
-        if(test.isFile()){
-            hashs.put(c,hashFile(c));
-        }else{
+
+
+        if(test.isDirectory()){
             hashs.put(c,hashDirectory(c));
+            System.out.println(c + " est un directory");
+        }
+        if(test.isFile()){
+            System.out.println(c + " est un fichier ");
+            hashs.put(c,hashFile(c));
         }
         ArrayList<String> childs = getChildren(getRoot());
         for (String child : childs ){
-            explore(child,hashs);
+            if(!visited.contains(c)) {
+                visited.add(c);
+                explore(child, hashs,visited);
+            }
         }
     }
 
@@ -210,13 +219,13 @@ public class LocalFileSystem implements FileSystem {
     }
 
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, CloneNotSupportedException {
 
         LocalFileSystem fileSystem = null ;
         String SE = System.getProperty("os.name").toLowerCase();
         if (SE.indexOf("win") >= 0) {
             //Pour WINDOWS
-            fileSystem = new LocalFileSystem("C:\\");
+            fileSystem = new LocalFileSystem("C:\\UE-SYN");
               //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
         } else if (SE.indexOf("nux") >= 0) {
             //Pour LINUX
@@ -303,8 +312,18 @@ public class LocalFileSystem implements FileSystem {
         /* Test hash file */
         System.out.println("**************** Test SYNCHRONISER ****************");
         Synchronizer synchronizer = new Synchronizer();
+        LocalFileSystem fs1 = new LocalFileSystem("C:"+File.separator + "UE-SYN1");
+        LocalFileSystem fs2 = new LocalFileSystem("C:"+File.separator + "UE-SYN2");
 
-        System.out.println("************************************************\n");
+
+        while(true){
+            ArrayList<String> paths = synchronizer.computeDirty(fs1.getReference(),fs1,"");
+            if(paths.size() !=0){
+                System.out.println(paths.toString());
+            }
+
+        }
+        //System.out.println("************************************************\n");
     }
     
 }
