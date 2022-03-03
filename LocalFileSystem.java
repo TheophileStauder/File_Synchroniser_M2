@@ -225,7 +225,7 @@ public class LocalFileSystem implements FileSystem,Cloneable {
         String SE = System.getProperty("os.name").toLowerCase();
         if (SE.indexOf("win") >= 0) {
             //Pour WINDOWS
-            fileSystem = new LocalFileSystem("C:\\UE-SYN");
+            fileSystem = new LocalFileSystem("C:\\");
               //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
         } else if (SE.indexOf("nux") >= 0) {
             //Pour LINUX
@@ -312,17 +312,17 @@ public class LocalFileSystem implements FileSystem,Cloneable {
         /* Test hash file */
         System.out.println("**************** Test SYNCHRONISER ****************");
         Synchronizer synchronizer = new Synchronizer();
-        LocalFileSystem fs1 = new LocalFileSystem("C:"+File.separator + "UE-SYN1");
-        LocalFileSystem fs2 = new LocalFileSystem("C:"+File.separator + "UE-SYN2");
+        LocalFileSystem fs1 = new LocalFileSystem("C:"+File.separator + "testDirectory0");
+        LocalFileSystem fs2 = new LocalFileSystem("C:"+File.separator + "testDirectory1");
 
 
-        while(true){
-            ArrayList<String> paths = synchronizer.computeDirty(fs1.getReference(),fs1,"");
-            if(paths.size() !=0){
-                System.out.println(paths.toString());
-            }
-
+        ArrayList<String> paths = synchronizer.computeDirty(fs1.getReference(),fs2.getReference(),"");
+        //paths.addAll(synchronizer.computeDirty(fs2.getReference(),fs1,""));
+        if(paths.size() !=0){
+            System.out.println(paths.toString());
         }
+
+        
         //System.out.println("************************************************\n");
     }
     

@@ -26,13 +26,28 @@ public class Synchronizer {
         HashMap<String, String> lastState = lastSync.getAllHash();
         HashMap<String, String> state = fs.getAllHash();
 
+        //System.out.println(lastState.toString());
+        
+        //System.out.println(state.toString());
+
         if(lastState.equals(state)){
+            System.out.println("Les deux fichiers sont equals"); // donc il n'y a rien à faire
             return l;
         }
+        else{
+            System.out.println("Les deux fichiers ne sont pas equals"); // donc il faut les ajouter à la liste 
+            for (HashMap.Entry<String, String> entry : state.entrySet()) {
+                l.add(entry.getKey());
+            }
+            for (HashMap.Entry<String, String> entry : lastState.entrySet()) {
+                l.add(entry.getKey());
+            }
+        }
+      
 
-        lastState.forEach((k, v) -> {
-            System.out.format("key: %s, value: %d%n", k, v);
-        });
+        /*lastState.forEach((k, v) -> {
+            System.out.format("key: %s, value: %s%n", k, v);
+        });*/
 
         return l;
     }
