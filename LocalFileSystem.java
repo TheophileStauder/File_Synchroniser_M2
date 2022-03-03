@@ -183,7 +183,7 @@ public class LocalFileSystem implements FileSystem,Cloneable {
 
         if(test.isDirectory()){
             hashs.put(c,hashDirectory(c));
-            System.out.println(c + " est un directory");
+            //System.out.println(c + " est un directory");
         }
         if(test.isFile()){
             System.out.println(c + " est un fichier ");
@@ -315,13 +315,15 @@ public class LocalFileSystem implements FileSystem,Cloneable {
         LocalFileSystem fs1 = new LocalFileSystem("C:"+File.separator + "testDirectory0");
         LocalFileSystem fs2 = new LocalFileSystem("C:"+File.separator + "testDirectory1");
 
-
-        ArrayList<String> paths = synchronizer.computeDirty(fs1.getReference(),fs2.getReference(),"");
-        //paths.addAll(synchronizer.computeDirty(fs2.getReference(),fs1,""));
-        if(paths.size() !=0){
-            System.out.println(paths.toString());
+        while(true){
+            ArrayList<String> paths = synchronizer.computeDirty(fs1.getReference(),fs1.getReference(),"");
+            //paths.addAll(synchronizer.computeDirty(fs2.getReference(),fs1,""));
+            if(paths.size() !=0){
+                //System.out.println(paths.toString());
         }
 
+        }
+        
         
         //System.out.println("************************************************\n");
     }
