@@ -1,5 +1,6 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public interface FileSystem{
@@ -17,5 +18,6 @@ public interface FileSystem{
     public File createDirectory(String path);
     public void fileCopy(File input, File output) throws Exception;
 
-    
+
+    HashMap<String, String> getAllHash();
 }

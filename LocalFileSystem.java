@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LocalFileSystem implements FileSystem {
 
@@ -22,18 +23,7 @@ public class LocalFileSystem implements FileSystem {
     }
     // Retourne la racine du système
     public String getRoot() {
-        /*String SE = System.getProperty("os.name").toLowerCase();
-        System.out.println(SE);
-        if (SE.indexOf("win") >= 0) {
-            System.out.println("Votre système est Windows");
-            return "C:\\";
-          } else if (SE.indexOf("nux") >= 0) {
-            System.out.println("Votre système est Unix ou Linux");
-            return "/";
-          } else{
-            System.out.println("Votre système n'est pas pris en charge!");
-            return "";
-          }*/
+
         return this.root;
     }
 
@@ -155,6 +145,11 @@ public class LocalFileSystem implements FileSystem {
         return sb.toString();
     }
 
+    public HashMap<String, String> getAllHash(){
+        HashMap<String, String> allHash = new HashMap<>();
+
+        return allHash;
+    }
 
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
@@ -163,7 +158,7 @@ public class LocalFileSystem implements FileSystem {
         String SE = System.getProperty("os.name").toLowerCase();
         if (SE.indexOf("win") >= 0) {
             //Pour WINDOWS
-            fileSystem = new LocalFileSystem("C:\\");
+            fileSystem = new LocalFileSystem("C:\\UE-SYN");
               //A CHANGER J'ETAIS SUR LES ORDIS DE LA FAC CAR PLUS DE BATTERIE SUR MON PC : /home/UE-SYN
         } else if (SE.indexOf("nux") >= 0) {
             //Pour LINUX
