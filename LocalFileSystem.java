@@ -113,6 +113,25 @@ public class LocalFileSystem implements FileSystem {
         return checksum;
     }
 
+    public String hashDirectory(String filePath) throws IOException, NoSuchAlgorithmException {
+        //Create checksum for this file
+        String checksum = "";
+        File test;
+        ArrayList<String> childs = getChildren(filePath);
+        for (String c : childs ){
+            test = new File(c);
+            if(test.isFile()){
+                checksum = checksum + hashFile(c);
+            }else{
+                checksum = checksum + test.getName();
+            }
+        }
+
+
+        //see checksum
+        return checksum;
+    }
+
     private static String getFileChecksum(MessageDigest digest, File file) throws IOException
     {
         //Get file input stream for reading the file content
@@ -145,10 +164,27 @@ public class LocalFileSystem implements FileSystem {
         return sb.toString();
     }
 
-    public HashMap<String, String> getAllHash(){
+    public HashMap<String, String> getAllHash() throws IOException, NoSuchAlgorithmException {
         HashMap<String, String> allHash = new HashMap<>();
-
+        //Parcours DFS
+        ArrayList<String> childs = getChildren(getRoot());
+        for (String c : childs ){
+            explore(c,allHash);
+        }
         return allHash;
+    }
+
+    public void explore(String c, HashMap<String, String> hashs) throws IOException, NoSuchAlgorithmException{
+        File test = new File(c);
+        if(test.isFile()){
+            hashs.put(c,hashFile(c));
+        }else{
+            hashs.put(c,hashDirectory(c));
+        }
+        ArrayList<String> childs = getChildren(getRoot());
+        for (String child : childs ){
+            explore(child,hashs);
+        }
     }
 
 
@@ -227,6 +263,17 @@ public class LocalFileSystem implements FileSystem {
         testPath = fileSystem.getRoot() +File.separator+"testDirectory0"+File.separator+"dog.txt";
         String hash = fileSystem.hashFile(testPath);
         System.out.println("Hash de " + testPath + " : " + hash);
+        testPath = fileSystem.getRoot() +File.separator+"testDirectory0";
+        hash = fileSystem.hashDirectory(testPath);
+        System.out.println("Hash de " + testPath + " : " + hash);
+        System.out.println("************************************************\n");
+
+        /*Test getAbsolutePath */
+
+        /* Test hash file */
+        System.out.println("**************** Test SYNCHRONISER ****************");
+        Synchronizer synchronizer = new Synchronizer();
+
         System.out.println("************************************************\n");
     }
     

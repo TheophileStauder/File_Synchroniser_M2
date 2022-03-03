@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,5 +21,5 @@ public interface FileSystem{
     public void fileCopy(File input, File output) throws Exception;
 
 
-    HashMap<String, String> getAllHash();
+    HashMap<String, String> getAllHash() throws IOException, NoSuchAlgorithmException;
 }
