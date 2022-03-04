@@ -78,11 +78,15 @@ public class Synchronizer {
         System.out.println("Dirty 1 : "+ dirtyPaths1.toString());
         System.out.println("Dirty 2 : "+ dirtyPaths2.toString());
 
-        if(dirtyPaths1.isEmpty() && dirtyPaths2.isEmpty()){
+        if(!dirtyPaths1.isEmpty() || !dirtyPaths2.isEmpty()){
             // on ne fait rien, les fichiers et dossiers ne sont pas dirtys
-            System.out.println("AUCUNE MODIFICATION");
+            System.out.println("MODIFICATION");
+            reconcile(fs1,dirtyPaths1,fs2,dirtyPaths2,"");
         }
-        else if(!dirtyPaths1.isEmpty()){
+
+    }
+    public void reconcile(FileSystem fs1, List<String> dirtyPaths1, FileSystem fs2, List<String> dirtyPaths2, String currentRelativePath) throws IOException {
+        if(!dirtyPaths1.isEmpty()){
             for(String path : dirtyPaths1){
                 File source = new File(path);
                 String pathDest = path;
