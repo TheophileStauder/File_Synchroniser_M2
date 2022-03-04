@@ -72,7 +72,7 @@ public class Synchronizer {
     public void synchronize(FileSystem fs1, FileSystem fs2) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InterruptedException {
         FileSystem refCopy1 = fs1.getReference();
         FileSystem refCopy2 = fs2.getReference();
-        Thread.sleep(1000);
+        Thread.sleep(4000);
         ArrayList <String> dirtyPaths1 = computeDirty(refCopy1, fs1, "");
         ArrayList <String> dirtyPaths2 = computeDirty(refCopy2, fs2, "");
         System.out.println("Dirty 1 : "+ dirtyPaths1.toString());
@@ -143,5 +143,42 @@ public class Synchronizer {
 
     public void setFilesystemB(LocalFileSystem filesystemB) {
         this.filesystemB = filesystemB;
+    }
+
+    public void initialization(LocalFileSystem fs1, LocalFileSystem fs2) throws IOException, NoSuchAlgorithmException, CloneNotSupportedException {
+        ArrayList<String> childfs1 = fs1.getChildren(fs1.getRoot());
+        for(String child : childfs1){
+            File src = new File(child);
+            String pathDest = child;
+            pathDest = pathDest.replace(fs1.getRoot(),fs2.getRoot());
+            File dest = new File(pathDest);
+            if(src.exists()){
+                if(src.isDirectory()){
+                    System.out.println("DIRECTORY");
+                }else{
+                    Files.copy(src.toPath(), dest.toPath(),StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
+
+        ArrayList<String> childfs2 = fs2.getChildren(fs2.getRoot());
+        for(String child : childfs2){
+            File src = new File(child);
+            String pathDest = child;
+            pathDest = pathDest.replace(fs2.getRoot(),fs1.getRoot());
+            File dest = new File(pathDest);
+            if(src.exists()){
+                if(src.isDirectory()){
+                    System.out.println("DIRECTORY");
+                    //FileUtils.copyDirectory(srcDir, destDir);
+                }else{
+                    System.out.println(src.toPath().toString());
+                    System.out.println(dest.toPath().toString());
+                    Files.copy(src.toPath(), dest.toPath(),StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
+
+
     }
 }

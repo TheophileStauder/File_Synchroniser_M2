@@ -200,7 +200,7 @@ public class LocalFileSystem implements FileSystem,Cloneable {
         if(test.isDirectory()){
             hashs.put(c,hashDirectory(c));
             //System.out.println(c + " est un directory");
-            ArrayList<String> childs = getChildren(getRoot());
+            ArrayList<String> childs = getChildren(test.getPath());
             for (String child : childs){
                 if(!visited.contains(child)) {
                     visited.add(child);
@@ -336,6 +336,8 @@ public class LocalFileSystem implements FileSystem,Cloneable {
         Synchronizer synchronizer = new Synchronizer();
         LocalFileSystem fs1 = new LocalFileSystem("C:"+File.separator + "UE-SYN1");
         LocalFileSystem fs2 = new LocalFileSystem("C:"+File.separator + "UE-SYN2");
+
+        synchronizer.initialization(fs1,fs2);
 
         while(true){
 
