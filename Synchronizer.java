@@ -86,6 +86,8 @@ public class Synchronizer {
 
     }
     public void reconcile(FileSystem fs1, List<String> dirtyPaths1, FileSystem fs2, List<String> dirtyPaths2, String currentRelativePath) throws IOException {
+
+
         if(!dirtyPaths1.isEmpty()){
             for(String path : dirtyPaths1){
                 File source = new File(path);
@@ -95,6 +97,8 @@ public class Synchronizer {
                 if(source.exists()){
                     if(source.isDirectory()){
                         dest.mkdir();
+                        ArrayList<String> childs1 = fs1.getChildren(path);
+                        reconcile(fs1,childs1,fs2,dirtyPaths2,"");
                     }else{
                         Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING );
                     }
@@ -113,6 +117,8 @@ public class Synchronizer {
                 if(source.exists()){
                     if(source.isDirectory()){
                         dest.mkdir();
+                        ArrayList<String> childs2 = fs2.getChildren(path);
+                        reconcile(fs1,dirtyPaths1,fs2,childs2,"");
                     }else{
                         Files.copy(source.toPath(), dest.toPath() ,StandardCopyOption.REPLACE_EXISTING );
                     }
