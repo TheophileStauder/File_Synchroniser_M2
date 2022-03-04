@@ -72,7 +72,9 @@ public class Synchronizer {
     public void synchronize(FileSystem fs1, FileSystem fs2) throws CloneNotSupportedException, IOException, NoSuchAlgorithmException, InterruptedException {
         FileSystem refCopy1 = fs1.getReference();
         FileSystem refCopy2 = fs2.getReference();
-        Thread.sleep(4000);
+
+        Thread.sleep(3000);
+
         ArrayList <String> dirtyPaths1 = computeDirty(refCopy1, fs1, "");
         ArrayList <String> dirtyPaths2 = computeDirty(refCopy2, fs2, "");
         System.out.println("Dirty 1 : "+ dirtyPaths1.toString());
@@ -85,10 +87,11 @@ public class Synchronizer {
         }
 
     }
-    public void reconcile(FileSystem fs1, List<String> dirtyPaths1, FileSystem fs2, List<String> dirtyPaths2, String currentRelativePath) throws IOException {
+    public void reconcile(FileSystem fs1, List<String> dirtyPaths1, FileSystem fs2, List<String> dirtyPaths2, String currentRelativePath)  {
 
 
         if(!dirtyPaths1.isEmpty()){
+            Collections.sort(dirtyPaths1);
             for(String path : dirtyPaths1){
                 File source = new File(path);
                 String pathDest = path;
@@ -100,7 +103,11 @@ public class Synchronizer {
                         ArrayList<String> childs1 = fs1.getChildren(path);
                         reconcile(fs1,childs1,fs2,dirtyPaths2,"");
                     }else{
-                        Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING );
+                        try {
+                            Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING );
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                 }else{
@@ -109,6 +116,7 @@ public class Synchronizer {
             }
         }
         else if(!dirtyPaths2.isEmpty()){
+            Collections.sort(dirtyPaths2);
             for(String path : dirtyPaths2){
                 File source = new File(path);
                 String pathDest = path;
@@ -120,7 +128,11 @@ public class Synchronizer {
                         ArrayList<String> childs2 = fs2.getChildren(path);
                         reconcile(fs1,dirtyPaths1,fs2,childs2,"");
                     }else{
-                        Files.copy(source.toPath(), dest.toPath() ,StandardCopyOption.REPLACE_EXISTING );
+                        try {
+                            Files.copy(source.toPath(), dest.toPath() ,StandardCopyOption.REPLACE_EXISTING );
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }else{
                     dest.delete();
@@ -154,7 +166,6 @@ public class Synchronizer {
             File dest = new File(pathDest);
             if(src.exists()){
                 if(src.isDirectory()){
-                    System.out.println("DIRECTORY");
                 }else{
                     Files.copy(src.toPath(), dest.toPath(),StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -169,7 +180,6 @@ public class Synchronizer {
             File dest = new File(pathDest);
             if(src.exists()){
                 if(src.isDirectory()){
-                    System.out.println("DIRECTORY");
                     //FileUtils.copyDirectory(srcDir, destDir);
                 }else{
                     System.out.println(src.toPath().toString());

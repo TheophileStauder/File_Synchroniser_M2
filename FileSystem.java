@@ -23,4 +23,6 @@ public interface FileSystem{
     HashMap<String, String> getAllHash() throws IOException, NoSuchAlgorithmException;
 
     HashMap<String, String> getHashes();
+
+    void setHashes(HashMap<String, String> allHash);
 }

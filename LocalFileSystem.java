@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class LocalFileSystem implements FileSystem,Cloneable {
 
@@ -76,12 +77,16 @@ public class LocalFileSystem implements FileSystem,Cloneable {
      * Retourne une copie de l'objet sans référence
      */
     public FileSystem getReference() throws CloneNotSupportedException, IOException, NoSuchAlgorithmException {
-        this.hashes = getAllHash();
+
         FileSystem copy = (LocalFileSystem) this.clone();
+        copy.setHashes(getAllHash());
         //FileSystem copy = new Rthis;
         return copy;
     }
 
+    public void setHashes(HashMap<String, String> hashes) {
+        this.hashes = hashes;
+    }
 
     /**
      * Crée un répertoire
@@ -340,9 +345,7 @@ public class LocalFileSystem implements FileSystem,Cloneable {
         synchronizer.initialization(fs1,fs2);
 
         while(true){
-
             synchronizer.synchronize(fs1,fs2);
-
             //ArrayList<String> paths = synchronizer.computeDirty(fs1copy,fs1,"");
             //paths.addAll(synchronizer.computeDirty(fs2.getReference(),fs1,""));
 
